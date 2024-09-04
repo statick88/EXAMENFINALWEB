@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql
+    container_name: Web
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_USER: dark
+      MYSQL_PASSWORD: 1234
+      MYSQL_DATABASE: ventasdb
+
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  clientes:
+    build:
+      context: ./microservicio-clientes
+    container_name: clientes
+    ports:
+      - "6000:6000"
+    depends_on:
+      - mysql
+
+  productos:
+    build:
+      context: ./microservicio-productos
+    container_name: productos
+    ports:
+      - "7000:7000"
+    depends_on:
+      - mysql
+
+  ventas:
+    build:
+      context: ./microservicio-ventas
+    container_name: ventas
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mysql
+
+volumes:
+  mysql-data:
